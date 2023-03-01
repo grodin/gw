@@ -44,8 +44,6 @@ execute_gradle() {
 
   # Say what we are gonna do, then do it.
   err "Using gradle wrapper in $gradle_dir"
-  # CD into the directory where the gradle wrapper is
-  CDPATH="" cd "${gradle_dir}"
   
   exec "${gradle}" "$@"
 }
