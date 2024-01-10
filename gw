@@ -5,7 +5,7 @@ set -o nounset
 # DEFAULTS may be overridden by calling environment.
 GRADLEW="${GRADLEW:-gradlew}"
 
-err() {
+log() {
   echo -e "${@}" >&2
 }
 
@@ -29,10 +29,11 @@ select_gradle() {
   local dir="${1}"
 
   # Use project's gradlew if found.
-  local gradlew=$(lookup "${GRADLEW}" "${dir}")
+  local gradlew
+  gradlew=$(lookup "${GRADLEW}" "${dir}")
   if [[ -z "${gradlew}" ]]; then
-    err "No ${GRADLEW} set up for this project; consider setting one up:"
-    err "http://gradle.org/docs/current/userguide/gradle_wrapper.html\n"
+    log "No ${GRADLEW} set up for this project; consider setting one up:"
+    log "http://gradle.org/docs/current/userguide/gradle_wrapper.html\n"
   else
     echo "${gradlew}"
     return 0
@@ -41,17 +42,19 @@ select_gradle() {
 }
 
 execute_gradle() {
-  local gradle=$(select_gradle "${PWD}")
-  local gradle_dir="$(dirname ${gradle})" 
+  local gradle
+  gradle=$(select_gradle "${PWD}")
+  local gradle_dir
+  gradle_dir="$(dirname "${gradle}")" 
 
   # Say what we are gonna do, then do it.
-  err "Using gradle wrapper in $gradle_dir"
+  log "Using gradle wrapper in $gradle_dir"
   
   exec "${gradle}" "$@"
 }
 
 # gw may be sourced from other scripts as a library to select / run gradle(w).
-if [[ ${BASH_SOURCE[0]} != $0 ]]; then
+if [[ ${BASH_SOURCE[0]} != "$0" ]]; then
   export -f execute_gradle select_gradle lookup err
 else
   set -e
