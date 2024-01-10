@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -o nounset
+
 # DEFAULTS may be overridden by calling environment.
 GRADLEW="${GRADLEW:-gradlew}"
 
